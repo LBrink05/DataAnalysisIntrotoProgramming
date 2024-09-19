@@ -1,0 +1,8 @@
+[
+{
+  "directory": "/home/liam/Desktop/Development/IntrotoProgramming/DataAnalysis_IntrotoProgramming/build",
+  "command": "/usr/bin/g++ -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB   -no-pie -g -o CMakeFiles/DataAnalysis.dir/src/main/main.cpp.o -c /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysis_IntrotoProgramming/src/main/main.cpp",
+  "file": "/home/liam/Desktop/Development/IntrotoProgramming/DataAnalysis_IntrotoProgramming/src/main/main.cpp",
+  "output": "CMakeFiles/DataAnalysis.dir/src/main/main.cpp.o"
+}
+]

@@ -1,4 +1,5 @@
 //to compile: g++ -o main -no-pie -I /opt/vcpkg/packages/matplotplusplus_x64-linux/include ../src/main/main.cpp -lboost_serialization
+//can also compile with cmake now using cmake --build build and then ./build/DataAnalysis
 //for general operations with files
 
 //mmatplotplusplus for plot

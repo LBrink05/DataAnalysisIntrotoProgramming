@@ -1,2 +1,2 @@
-Dataset/
-build-dir/Vectorset
+Dataset/*
+build-dir/Vectorset/*

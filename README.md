@@ -1,2 +1,2 @@
 # DataAnalysis_IntrotoProgramming
-Folder for Script
+A program to read 5 million particle events and analyse Omega matter and anti-matter particles.

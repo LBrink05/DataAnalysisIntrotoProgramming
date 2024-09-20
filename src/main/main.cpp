@@ -1,5 +1,5 @@
 //to compile: g++ -o main -no-pie -I /opt/vcpkg/packages/matplotplusplus_x64-linux/include ../src/main/main.cpp -lboost_serialization
-//can also compile with cmake now using cmake --build build and then ./build/DataAnalysis
+//can also compile with cmake now using cmake --build build && ./build/DataAnalysis
 //for general operations with files
 
 //mmatplotplusplus for plot
@@ -42,7 +42,7 @@ class Particle {
       ar & pseudorapidity;
     }
   public:
-  int PGC;
+  int32_t PGC;
   float Px; 
   float Py; 
   float Pz; 
@@ -62,20 +62,21 @@ class Particle_event{
         ar & Particles;
     }
   public:
-  int particlesperevent;
+  uint32_t particlesperevent;
   std::vector<Particle> Particles;
 };
 
 //Class to keep track of analysed information
 class Analysed_Data{
   public:
-  int total_particle_count; //run serialize with all particles once to get that count dont forget to uncomment option in Analyse_Data()
-  int Omegaminus_count;
-  int Omegaplus_count;
+  uint64_t total_particle_count; //run serialize with all particles once to get that count dont forget to uncomment option in Analyse_Data()
+  uint32_t Omegaminus_count;
+  uint32_t Omegaplus_count;
   double Omegaminus_average;
   double Omegaplus_average;
   double average_matter_antimatter_ratio;
-
+  std::vector<std::array<uint32_t,8>> matrix_data; 
+  bool matrix_function = false;
 };
 
 //SERIALIZATION functions
@@ -138,7 +139,7 @@ std::vector<int> deserialization_misc(){
     std::cout << "Do you want to use the default Dataset directory? Y/N" << endl;
     bool defaultpath;
     string answer;
-    string defaultdirectory = "/home/liam/Desktop/Development/IntrotoProgramming/DataAnalysis_IntrotoProgramming/Dataset/DataFiles";
+    string defaultdirectory = "/home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/Dataset/DataFiles";
     std::cin >> answer;
     std::cout << "You have choosen: ";
     if (answer == "Y" | answer == "y" ){
@@ -284,10 +285,38 @@ int Read_Calc_Particles(std::vector<Particle_event> Particle_event_vector, std::
 
 //Function to calculate certain averages etc from particle events
 Analysed_Data Analyse_Data(std::vector<Particle_event> Particle_event_vector, Analysed_Data Analysed_Data){
+  //request if you want to calculate matrix function
+  std::cout << "Do you wish to use the matrix function? Y/N" << endl;
+
+  string answer;
+  std::cin >> answer;
+  std::cout << "You have choosen ";
+  if (answer == "Y" | answer == "y" ){
+    Analysed_Data.matrix_function = true;
+    std::cout << "to use the matrix function." << endl;
+  }
+  else if (answer == "N" | answer == "n" ) {
+    Analysed_Data.matrix_function = false;
+    std::cout << "not to use the matrix function." << endl;
+  }
+  else{
+    std::cout << "Error: Wrong Input." << endl;
+    abort();
+  }
+  //delay to read choice
+  sleep(1);
 
   //Gathering overall count of Omega particles in 5 million collisions
   Analysed_Data.Omegaminus_count = 0;
   Analysed_Data.Omegaplus_count = 0;
+
+  //step for calculations
+  float step_pseudorapidity = 1;
+  float step_transverseP = 0.5;
+  int offset_pseudorapidity = 4;
+  int Vectorposition = 0;
+  int Arrayposition = 0;
+  int total_count = 0;
   //single nested for loop to gather data of particles
   for (int event = 0; event < Particle_event_vector.size(); event++){
     for (int particle = 0; particle < Particle_event_vector[event].Particles.size(); particle++){
@@ -299,10 +328,25 @@ Analysed_Data Analyse_Data(std::vector<Particle_event> Particle_event_vector, An
         Analysed_Data.Omegaplus_count++;
       }
       //comparing particles on pseudorapidity and transverseP by counting and grouping
-      
+      if (Analysed_Data.matrix_function and (abs(Particle_event_vector[event].Particles[particle].PGC) == 3334)){ 
+        // using formula floor((value + offset) / step) to get array/vector position
+        Vectorposition = floor(Particle_event_vector[event].Particles[particle].transverseP / step_transverseP);
+        Arrayposition = floor((Particle_event_vector[event].Particles[particle].pseudorapidity + offset_pseudorapidity) / step_pseudorapidity);
+        while (Vectorposition >= Analysed_Data.matrix_data.size()){
+          //could be converted into vector but should I?
+          Analysed_Data.matrix_data.push_back({0,0,0,0,0,0,0,0});
+        }
+        Analysed_Data.matrix_data[Vectorposition][Arrayposition]++;
+        total_count++;
+      }
     }
   }
-
+  //to check for error in matrix calculation
+  if (total_count != (Analysed_Data.Omegaplus_count + Analysed_Data.Omegaminus_count)){
+        std::cout << "Something went wrong in the matrix calculation." << std::endl;
+        std::cout << total_count << ", " << (Analysed_Data.Omegaminus_count + Analysed_Data.Omegaminus_count) <<std::endl;
+        abort();
+  }
 
   //Doing calculations with gathered data from vectors
   Analysed_Data.Omegaminus_average = Analysed_Data.Omegaminus_count / (double)Analysed_Data.total_particle_count;
@@ -320,14 +364,50 @@ Analysed_Data Analyse_Data(std::vector<Particle_event> Particle_event_vector, An
   return Analysed_Data;
 }
 
-//Function to create plot using matplotlib++
-void Display_Data(Analysed_Data Analysed_Data){
+//Function to display matrix data
+void matrix(Analysed_Data Analysed_Data){
+  if (!Analysed_Data.matrix_function){
+    return;
+  }
+
+  //defining line string and matrix string to print later
+  string line;
+  string matrix = "\n Transverse momentum and pseudorapidity matrix of Omega-minus and Omega-plus particles:\n\n";
+  matrix += "|                             | -4 < n < -3 | -3 < n < -2 | -2 < n < -1 | -1 < n <  0 |  0 < n <  1 |  1 < n <  2 |  2 < n <  3 |  3 < n <  4 |\n";
+  for (int place = 0; place < 143; place++){
+    matrix += "-";
+  }
+  matrix += "\n";
+
+  //iterating through data matrix  and adjusting letters to print more easy to read matrix
+  for (int transverseP_row = 0; transverseP_row < Analysed_Data.matrix_data.size(); transverseP_row++){
+    line += "| " + to_string(0+(transverseP_row/2.0)) + " < pT < " + to_string((0.5+(transverseP_row/2.0)));
+    while (line.length() < 30){line += " ";}
+    line += "| ";
+    for (int pseudorapidity_column = 0; pseudorapidity_column < Analysed_Data.matrix_data[transverseP_row].size(); pseudorapidity_column++){
+      line += to_string(Analysed_Data.matrix_data[transverseP_row][pseudorapidity_column]);
+      while (line.length() < (44 + 14*(pseudorapidity_column))){line += " ";}
+      line += "| ";
+    }
+    matrix += line+"\n";
+    line = "";
+  }
+
+  //printing readable matrix
+  std::cout << matrix << endl;
+  
+}
+
+//Function to display data
+void Display_Data(Analysed_Data Analysed_Data, std::vector<Particle_event> Particle_event_vector){
   std::cout << endl;
   std::cout << "Total amount of recorded particles: " << fixed << Analysed_Data.total_particle_count << endl;
   std::cout << "Total amount of Omega-minus: " <<  Analysed_Data.Omegaminus_count << " and of Omega-plus: " << Analysed_Data.Omegaplus_count << endl;
   std::cout << "Average of Omega-minus: " << Analysed_Data.Omegaminus_average << " and Omega-plus: " << Analysed_Data.Omegaplus_average<< endl;
   std::cout << "Ratio of Omega-minus to Omega-plus: " << Analysed_Data.average_matter_antimatter_ratio << endl;
   //std::cout << "Uncertainty: " << sqrt(Analysed_Data.Omegaminus_count) / (double)Analysed_Data.total_particle_count << endl;
+  //displaying matrix
+  matrix(Analysed_Data);
 }
 
 int main(){
@@ -370,7 +450,7 @@ int main(){
     sleep(1);
     //serializing data
     //amount of datasets !!!NEEDS TO BE CHANGED IF NUMBER CHANGES!!!
-    int dataset_num = 10;
+    uint8_t dataset_num = 10;
     std::vector<string> Datasetpathvector;
     Datasetpathvector = get_paths(Datasetpathvector,dataset_num);
     std::cout << "Finished getting Datasetpaths." << endl;
@@ -392,10 +472,10 @@ int main(){
     //declaring Analysed Data for particle count
     Analysed_Data Analysed_Data;
     Analysed_Data.total_particle_count = misc[0];
-    int Vectorsetfile_num = misc[1];
+    uint32_t Vectorsetfile_num = misc[1];
     //std::cout << fixed << Analysed_Data.total_particle_count << endl;
     //getting particle event vector
-    for (int num_files=0; num_files <= Vectorsetfile_num; num_files++){
+    for (uint8_t num_files=0; num_files <= Vectorsetfile_num; num_files++){
       std::vector<Particle_event> Partial_particle_event_vector;
       Partial_particle_event_vector = deserialization(num_files);
       //concatenate vectors
@@ -410,7 +490,7 @@ int main(){
 
     //Displaying results
     std::cout << "Beginning to display data." << endl;
-    Display_Data(Analysed_Data);
+    Display_Data(Analysed_Data, Particle_event_vector);
     std::cout << "Finished displaying data." << endl;
 
 

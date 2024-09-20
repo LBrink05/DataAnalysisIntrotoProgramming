@@ -1,5 +1,3 @@
-/home/liam/Desktop/Development/IntrotoProgramming/DataAnalysis_IntrotoProgramming/build/CMakeFiles/DataAnalysis.dir
-/home/liam/Desktop/Development/IntrotoProgramming/DataAnalysis_IntrotoProgramming/build/CMakeFiles/package.dir
-/home/liam/Desktop/Development/IntrotoProgramming/DataAnalysis_IntrotoProgramming/build/CMakeFiles/package_source.dir
-/home/liam/Desktop/Development/IntrotoProgramming/DataAnalysis_IntrotoProgramming/build/CMakeFiles/edit_cache.dir
-/home/liam/Desktop/Development/IntrotoProgramming/DataAnalysis_IntrotoProgramming/build/CMakeFiles/rebuild_cache.dir
+/home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/build/CMakeFiles/DataAnalysis.dir
+/home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/build/CMakeFiles/edit_cache.dir
+/home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/build/CMakeFiles/rebuild_cache.dir

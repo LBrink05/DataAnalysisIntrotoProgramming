@@ -57,33 +57,13 @@ RM = /usr/bin/cmake -E rm -f
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysis_IntrotoProgramming
+CMAKE_SOURCE_DIR = /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysis_IntrotoProgramming/build
+CMAKE_BINARY_DIR = /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/build
 
 #=============================================================================
 # Targets provided globally by CMake.
-
-# Special rule for the target package
-package: preinstall
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Run CPack packaging tool..."
-	/usr/bin/cpack --config ./CPackConfig.cmake
-.PHONY : package
-
-# Special rule for the target package
-package/fast: package
-.PHONY : package/fast
-
-# Special rule for the target package_source
-package_source:
-	@$(CMAKE_COMMAND) -E cmake_echo_color "--switch=$(COLOR)" --cyan "Run CPack packaging tool for source..."
-	/usr/bin/cpack --config ./CPackSourceConfig.cmake /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysis_IntrotoProgramming/build/CPackSourceConfig.cmake
-.PHONY : package_source
-
-# Special rule for the target package_source
-package_source/fast: package_source
-.PHONY : package_source/fast
 
 # Special rule for the target edit_cache
 edit_cache:
@@ -107,9 +87,9 @@ rebuild_cache/fast: rebuild_cache
 
 # The main all target
 all: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysis_IntrotoProgramming/build/CMakeFiles /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysis_IntrotoProgramming/build//CMakeFiles/progress.marks
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/build/CMakeFiles /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/build//CMakeFiles/progress.marks
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 all
-	$(CMAKE_COMMAND) -E cmake_progress_start /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysis_IntrotoProgramming/build/CMakeFiles 0
+	$(CMAKE_COMMAND) -E cmake_progress_start /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/build/CMakeFiles 0
 .PHONY : all
 
 # The main clean target
@@ -180,8 +160,6 @@ help:
 	@echo "... clean"
 	@echo "... depend"
 	@echo "... edit_cache"
-	@echo "... package"
-	@echo "... package_source"
 	@echo "... rebuild_cache"
 	@echo "... DataAnalysis"
 	@echo "... src/main/main.o"

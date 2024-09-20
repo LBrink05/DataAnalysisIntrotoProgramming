@@ -1,1 +1,1 @@
-/usr/bin/g++  -no-pie -g CMakeFiles/DataAnalysis.dir/src/main/main.cpp.o -o DataAnalysis  /usr/lib/x86_64-linux-gnu/libboost_serialization.so.1.83.0 
+/usr/bin/c++  -no-pie CMakeFiles/DataAnalysis.dir/src/main/main.cpp.o -o DataAnalysis  /usr/lib/x86_64-linux-gnu/libboost_serialization.so.1.83.0 

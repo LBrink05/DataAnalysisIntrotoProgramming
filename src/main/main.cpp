@@ -1,5 +1,5 @@
 //to compile: g++ -o main -no-pie -I /opt/vcpkg/packages/matplotplusplus_x64-linux/include ../src/main/main.cpp -lboost_serialization
-//can also compile with cmake now using cmake --build build && ./build/DataAnalysis
+//RECOMMENDED: compile with cmake using 'cmake --build build && ./build/DataAnalysis' in the DATAANALYSISINTROTOPROGRAMMING directory (no subdirectory)
 //for general operations with files
 
 //mmatplotplusplus for plot
@@ -75,7 +75,8 @@ class Analysed_Data{
   double Omegaminus_average;
   double Omegaplus_average;
   double average_matter_antimatter_ratio;
-  std::vector<std::array<uint32_t,8>> matrix_data; 
+  std::vector<std::array<uint32_t,8>> matrix_matter_data; 
+  std::vector<std::array<uint32_t,8>> matrix_antimatter_data; 
   bool matrix_function = false;
 };
 
@@ -104,6 +105,7 @@ void serialization_misc(int Particle_total_count, int Vectorsetfile_num){
     f.close();
     std::cout << "Serialization complete." << endl;
 }
+
 //DESERIALIZATION functions
 std::vector<Particle_event> deserialization(int num_files){
   //retrieve data from file > deserialize
@@ -134,7 +136,7 @@ std::vector<int> deserialization_misc(){
 }
 
 //Getting paths of the different Datasets
- std::vector<string> get_paths(std::vector<string> Datasetpathvector, int dataset_num){
+std::vector<string> get_paths(std::vector<string> Datasetpathvector, int dataset_num){
     //Requesting Directory if not me
     std::cout << "Do you want to use the default Dataset directory? Y/N" << endl;
     bool defaultpath;
@@ -316,7 +318,9 @@ Analysed_Data Analyse_Data(std::vector<Particle_event> Particle_event_vector, An
   int offset_pseudorapidity = 4;
   int Vectorposition = 0;
   int Arrayposition = 0;
-  int total_count = 0;
+  int matter_count = 0;
+  int antimatter_count = 0;
+
   //single nested for loop to gather data of particles
   for (int event = 0; event < Particle_event_vector.size(); event++){
     for (int particle = 0; particle < Particle_event_vector[event].Particles.size(); particle++){
@@ -327,25 +331,35 @@ Analysed_Data Analyse_Data(std::vector<Particle_event> Particle_event_vector, An
       else if (Particle_event_vector[event].Particles[particle].PGC == -3334){
         Analysed_Data.Omegaplus_count++;
       }
-      //comparing particles on pseudorapidity and transverseP by counting and grouping
+
+      //comparing particles on pseudorapidity and transverseP of Omega-minus by counting
       if (Analysed_Data.matrix_function and (abs(Particle_event_vector[event].Particles[particle].PGC) == 3334)){ 
         // using formula floor((value + offset) / step) to get array/vector position
         Vectorposition = floor(Particle_event_vector[event].Particles[particle].transverseP / step_transverseP);
         Arrayposition = floor((Particle_event_vector[event].Particles[particle].pseudorapidity + offset_pseudorapidity) / step_pseudorapidity);
-        while (Vectorposition >= Analysed_Data.matrix_data.size()){
-          //could be converted into vector but should I?
-          Analysed_Data.matrix_data.push_back({0,0,0,0,0,0,0,0});
+        if (Particle_event_vector[event].Particles[particle].PGC == 3334){
+          while (Vectorposition >= Analysed_Data.matrix_matter_data.size()){
+            Analysed_Data.matrix_matter_data.push_back({0,0,0,0,0,0,0,0});
+          }
+          Analysed_Data.matrix_matter_data[Vectorposition][Arrayposition]++;
+          matter_count++;
         }
-        Analysed_Data.matrix_data[Vectorposition][Arrayposition]++;
-        total_count++;
+        else if (Particle_event_vector[event].Particles[particle].PGC == -3334){
+          while (Vectorposition >= Analysed_Data.matrix_antimatter_data.size()){
+          Analysed_Data.matrix_antimatter_data.push_back({0,0,0,0,0,0,0,0});
+          }
+          Analysed_Data.matrix_antimatter_data[Vectorposition][Arrayposition]++;
+          antimatter_count++;
+        }
       }
     }
   }
-  //to check for error in matrix calculation
-  if (total_count != (Analysed_Data.Omegaplus_count + Analysed_Data.Omegaminus_count)){
-        std::cout << "Something went wrong in the matrix calculation." << std::endl;
-        std::cout << total_count << ", " << (Analysed_Data.Omegaminus_count + Analysed_Data.Omegaminus_count) <<std::endl;
-        abort();
+  //Checking for correct calculations:
+  if ((matter_count != Analysed_Data.Omegaminus_count) or (antimatter_count != Analysed_Data.Omegaplus_count)){
+    std::cout << "Error: Matrix data calculation went wrong." << std::endl;
+    std::cout << "Matter matrix count: " << matter_count<< " Omega-minus count: " << Analysed_Data.Omegaminus_count << std::endl;
+    std::cout << "Antimatter matrix count: " << antimatter_count << " Omega-plus count: " << Analysed_Data.Omegaplus_count << std::endl;
+    abort();
   }
 
   //Doing calculations with gathered data from vectors
@@ -365,27 +379,28 @@ Analysed_Data Analyse_Data(std::vector<Particle_event> Particle_event_vector, An
 }
 
 //Function to display matrix data
-void matrix(Analysed_Data Analysed_Data){
+void Display_matrix(Analysed_Data Analysed_Data){
   if (!Analysed_Data.matrix_function){
     return;
   }
 
   //defining line string and matrix string to print later
   string line;
-  string matrix = "\n Transverse momentum and pseudorapidity matrix of Omega-minus and Omega-plus particles:\n\n";
+  string matrix;
+
+  //iterating through data anti matter matrix and adjusting letters to print more easy to read matrix
+  matrix = "\n Transverse momentum and pseudorapidity matrix of Omega-minus: \n\n";
   matrix += "|                             | -4 < n < -3 | -3 < n < -2 | -2 < n < -1 | -1 < n <  0 |  0 < n <  1 |  1 < n <  2 |  2 < n <  3 |  3 < n <  4 |\n";
   for (int place = 0; place < 143; place++){
     matrix += "-";
   }
   matrix += "\n";
-
-  //iterating through data matrix  and adjusting letters to print more easy to read matrix
-  for (int transverseP_row = 0; transverseP_row < Analysed_Data.matrix_data.size(); transverseP_row++){
+  for (int transverseP_row = 0; transverseP_row < Analysed_Data.matrix_matter_data.size(); transverseP_row++){
     line += "| " + to_string(0+(transverseP_row/2.0)) + " < pT < " + to_string((0.5+(transverseP_row/2.0)));
     while (line.length() < 30){line += " ";}
     line += "| ";
-    for (int pseudorapidity_column = 0; pseudorapidity_column < Analysed_Data.matrix_data[transverseP_row].size(); pseudorapidity_column++){
-      line += to_string(Analysed_Data.matrix_data[transverseP_row][pseudorapidity_column]);
+    for (int pseudorapidity_column = 0; pseudorapidity_column < Analysed_Data.matrix_matter_data[transverseP_row].size(); pseudorapidity_column++){
+      line += to_string(Analysed_Data.matrix_matter_data[transverseP_row][pseudorapidity_column]);
       while (line.length() < (44 + 14*(pseudorapidity_column))){line += " ";}
       line += "| ";
     }
@@ -394,7 +409,31 @@ void matrix(Analysed_Data Analysed_Data){
   }
 
   //printing readable matrix
-  std::cout << matrix << endl;
+  std::cout << matrix << std::endl;
+  matrix = "";
+  
+  //iterating through data anti matter matrix and adjusting letters to print more easy to read matrix
+  matrix = "\n Transverse momentum and pseudorapidity matrix of Omega-plus: \n\n";
+  matrix += "|                             | -4 < n < -3 | -3 < n < -2 | -2 < n < -1 | -1 < n <  0 |  0 < n <  1 |  1 < n <  2 |  2 < n <  3 |  3 < n <  4 |\n";
+  for (int place = 0; place < 143; place++){
+    matrix += "-";
+  }
+  matrix += "\n";
+  for (int transverseP_row = 0; transverseP_row < Analysed_Data.matrix_antimatter_data.size(); transverseP_row++){
+    line += "| " + to_string(0+(transverseP_row/2.0)) + " < pT < " + to_string((0.5+(transverseP_row/2.0)));
+    while (line.length() < 30){line += " ";}
+    line += "| ";
+    for (int pseudorapidity_column = 0; pseudorapidity_column < Analysed_Data.matrix_antimatter_data[transverseP_row].size(); pseudorapidity_column++){
+      line += to_string(Analysed_Data.matrix_antimatter_data[transverseP_row][pseudorapidity_column]);
+      while (line.length() < (44 + 14*(pseudorapidity_column))){line += " ";}
+      line += "| ";
+    }
+    matrix += line+"\n";
+    line = "";
+  }
+
+  std::cout<< matrix << std::endl;
+
   
 }
 
@@ -407,7 +446,7 @@ void Display_Data(Analysed_Data Analysed_Data, std::vector<Particle_event> Parti
   std::cout << "Ratio of Omega-minus to Omega-plus: " << Analysed_Data.average_matter_antimatter_ratio << endl;
   //std::cout << "Uncertainty: " << sqrt(Analysed_Data.Omegaminus_count) / (double)Analysed_Data.total_particle_count << endl;
   //displaying matrix
-  matrix(Analysed_Data);
+  Display_matrix(Analysed_Data);
 }
 
 int main(){

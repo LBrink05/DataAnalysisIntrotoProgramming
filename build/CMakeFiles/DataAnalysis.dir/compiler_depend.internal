@@ -15,6 +15,10 @@ CMakeFiles/DataAnalysis.dir/src/main/main.cpp.o
  /usr/include/boost/archive/basic_binary_oarchive.hpp
  /usr/include/boost/archive/basic_binary_oprimitive.hpp
  /usr/include/boost/archive/basic_streambuf_locale_saver.hpp
+ /usr/include/boost/archive/basic_text_iprimitive.hpp
+ /usr/include/boost/archive/basic_text_oprimitive.hpp
+ /usr/include/boost/archive/basic_xml_iarchive.hpp
+ /usr/include/boost/archive/basic_xml_oarchive.hpp
  /usr/include/boost/archive/binary_iarchive.hpp
  /usr/include/boost/archive/binary_iarchive_impl.hpp
  /usr/include/boost/archive/binary_oarchive.hpp
@@ -41,6 +45,8 @@ CMakeFiles/DataAnalysis.dir/src/main/main.cpp.o
  /usr/include/boost/archive/detail/iserializer.hpp
  /usr/include/boost/archive/detail/oserializer.hpp
  /usr/include/boost/archive/detail/register_archive.hpp
+ /usr/include/boost/archive/xml_iarchive.hpp
+ /usr/include/boost/archive/xml_oarchive.hpp
  /usr/include/boost/assert.hpp
  /usr/include/boost/assert/source_location.hpp
  /usr/include/boost/config.hpp
@@ -82,6 +88,8 @@ CMakeFiles/DataAnalysis.dir/src/main/main.cpp.o
  /usr/include/boost/integer.hpp
  /usr/include/boost/integer_fwd.hpp
  /usr/include/boost/integer_traits.hpp
+ /usr/include/boost/io/ios_state.hpp
+ /usr/include/boost/io_fwd.hpp
  /usr/include/boost/limits.hpp
  /usr/include/boost/move/core.hpp
  /usr/include/boost/move/detail/addressof.hpp

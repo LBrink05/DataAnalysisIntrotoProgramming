@@ -1,9 +1,5 @@
-//to compile: g++ -o main -no-pie -I /opt/vcpkg/packages/matplotplusplus_x64-linux/include ../src/main/main.cpp -lboost_serialization
+//to compile: g++ -o main -no-pie ../src/main/main.cpp -lboost_serialization
 //RECOMMENDED: compile with cmake using 'cmake --build build && ./build/DataAnalysis' in the DATAANALYSISINTROTOPROGRAMMING directory (no subdirectory)
-//for general operations with files
-
-//mmatplotplusplus for plot
-//#include <matplot/matplot.h>
 
 //standard libs
 #include <iostream>
@@ -18,6 +14,8 @@
 //for serialization
 #include <boost/archive/binary_oarchive.hpp>
 #include <boost/archive/binary_iarchive.hpp>
+#include <boost/archive/xml_iarchive.hpp>
+#include <boost/archive/xml_oarchive.hpp>
 #include <boost/serialization/binary_object.hpp>
 #include <boost/serialization/serialization.hpp>
 #include <boost/serialization/vector.hpp>
@@ -41,6 +39,7 @@ class Particle {
       ar & azimutalangle;
       ar & pseudorapidity;
     }
+    
   public:
   int32_t PGC;
   float Px; 
@@ -61,6 +60,7 @@ class Particle_event{
         ar & particlesperevent;
         ar & Particles;
     }
+
   public:
   uint32_t particlesperevent;
   std::vector<Particle> Particles;
@@ -68,16 +68,34 @@ class Particle_event{
 
 //Class to keep track of analysed information
 class Analysed_Data{
+  friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version)
+    {
+        ar & BOOST_SERIALIZATION_NVP(total_particle_count); 
+        ar & BOOST_SERIALIZATION_NVP(Omegaminus_count);
+        ar & BOOST_SERIALIZATION_NVP(Omegaplus_count);
+        ar & BOOST_SERIALIZATION_NVP(Omegaminus_average);
+        ar & BOOST_SERIALIZATION_NVP(Omegaplus_average);
+        ar & BOOST_SERIALIZATION_NVP(average_matter_antimatter_ratio);
+        ar & BOOST_SERIALIZATION_NVP(matter_pseudo_rapidity_vector);
+        ar & BOOST_SERIALIZATION_NVP(matter_transverseP_vector);
+        ar & BOOST_SERIALIZATION_NVP(antimatter_pseudo_rapidity_vector);
+        ar & BOOST_SERIALIZATION_NVP(antimatter_transverseP_vector);
+    }
+  
   public:
-  uint64_t total_particle_count; //run serialize with all particles once to get that count dont forget to uncomment option in Analyse_Data()
+  uint64_t total_particle_count; 
   uint32_t Omegaminus_count;
   uint32_t Omegaplus_count;
-  double Omegaminus_average;
-  double Omegaplus_average;
-  double average_matter_antimatter_ratio;
-  std::vector<std::array<uint32_t,8>> matrix_matter_data; 
-  std::vector<std::array<uint32_t,8>> matrix_antimatter_data; 
-  bool matrix_function = false;
+  double_t Omegaminus_average;
+  double_t Omegaplus_average;
+  double_t average_matter_antimatter_ratio;
+  //introduce float uncertainty too
+  std::vector<uint32_t> matter_pseudo_rapidity_vector;
+  std::vector<uint32_t> matter_transverseP_vector;
+  std::vector<uint32_t> antimatter_pseudo_rapidity_vector;
+  std::vector<uint32_t> antimatter_transverseP_vector;
 };
 
 //SERIALIZATION functions
@@ -102,6 +120,19 @@ void serialization_misc(int Particle_total_count, int Vectorsetfile_num){
     boost::archive::binary_oarchive ar(f, boost::archive::no_header); 
     std::vector<int> misc = {Particle_total_count, Vectorsetfile_num};
     ar << misc;
+    f.close();
+    std::cout << "Serialization complete." << endl;
+}
+
+void serialization_results(Analysed_Data Analysed_Data){
+  //store data in file .> serialize
+  //in xml for python xml parser
+    std::cout << " Beginning Serialization of ";
+    string Filename = "Vectorset/results.xml";
+    std::cout << Filename << endl;
+    std::ofstream f(Filename);
+    boost::archive::xml_oarchive ar(f, boost::archive::no_header); 
+    ar << BOOST_SERIALIZATION_NVP(Analysed_Data);
     f.close();
     std::cout << "Serialization complete." << endl;
 }
@@ -219,7 +250,6 @@ int Read_Calc_Particles(std::vector<Particle_event> Particle_event_vector, std::
 
         while(getline(ifs,line_of_file)){
 
-
           //get string of each line and get the terms put it into substring that gets put into a vector
           string substring = "";
           //indexing all numbers per line
@@ -287,26 +317,6 @@ int Read_Calc_Particles(std::vector<Particle_event> Particle_event_vector, std::
 
 //Function to calculate certain averages etc from particle events
 Analysed_Data Analyse_Data(std::vector<Particle_event> Particle_event_vector, Analysed_Data Analysed_Data){
-  //request if you want to calculate matrix function
-  std::cout << "Do you wish to use the matrix function? Y/N" << endl;
-
-  string answer;
-  std::cin >> answer;
-  std::cout << "You have choosen ";
-  if (answer == "Y" | answer == "y" ){
-    Analysed_Data.matrix_function = true;
-    std::cout << "to use the matrix function." << endl;
-  }
-  else if (answer == "N" | answer == "n" ) {
-    Analysed_Data.matrix_function = false;
-    std::cout << "not to use the matrix function." << endl;
-  }
-  else{
-    std::cout << "Error: Wrong Input." << endl;
-    abort();
-  }
-  //delay to read choice
-  sleep(1);
 
   //Gathering overall count of Omega particles in 5 million collisions
   Analysed_Data.Omegaminus_count = 0;
@@ -316,8 +326,8 @@ Analysed_Data Analyse_Data(std::vector<Particle_event> Particle_event_vector, An
   float step_pseudorapidity = 1;
   float step_transverseP = 0.5;
   int offset_pseudorapidity = 4;
-  int Vectorposition = 0;
-  int Arrayposition = 0;
+  int pseudorapdityposition = 0;
+  int transversePposition = 0;
   int matter_count = 0;
   int antimatter_count = 0;
 
@@ -333,34 +343,36 @@ Analysed_Data Analyse_Data(std::vector<Particle_event> Particle_event_vector, An
       }
 
       //comparing particles on pseudorapidity and transverseP of Omega-minus by counting
-      if (Analysed_Data.matrix_function and (abs(Particle_event_vector[event].Particles[particle].PGC) == 3334)){ 
+      if (abs(Particle_event_vector[event].Particles[particle].PGC) == 3334){ 
         // using formula floor((value + offset) / step) to get array/vector position
-        Vectorposition = floor(Particle_event_vector[event].Particles[particle].transverseP / step_transverseP);
-        Arrayposition = floor((Particle_event_vector[event].Particles[particle].pseudorapidity + offset_pseudorapidity) / step_pseudorapidity);
+        transversePposition = floor(Particle_event_vector[event].Particles[particle].transverseP / step_transverseP);
+        pseudorapdityposition = floor((Particle_event_vector[event].Particles[particle].pseudorapidity + offset_pseudorapidity) / step_pseudorapidity);
         if (Particle_event_vector[event].Particles[particle].PGC == 3334){
-          while (Vectorposition >= Analysed_Data.matrix_matter_data.size()){
-            Analysed_Data.matrix_matter_data.push_back({0,0,0,0,0,0,0,0});
+          while (pseudorapdityposition >= Analysed_Data.matter_pseudo_rapidity_vector.size()){
+            Analysed_Data.matter_pseudo_rapidity_vector.push_back(0);
           }
-          Analysed_Data.matrix_matter_data[Vectorposition][Arrayposition]++;
+          Analysed_Data.matter_pseudo_rapidity_vector[pseudorapdityposition]++;
+          while (transversePposition >= Analysed_Data.matter_transverseP_vector.size()){
+            Analysed_Data.matter_transverseP_vector.push_back(0);
+          }
+          Analysed_Data.matter_transverseP_vector[transversePposition]++;
           matter_count++;
         }
         else if (Particle_event_vector[event].Particles[particle].PGC == -3334){
-          while (Vectorposition >= Analysed_Data.matrix_antimatter_data.size()){
-          Analysed_Data.matrix_antimatter_data.push_back({0,0,0,0,0,0,0,0});
+          while (pseudorapdityposition >= Analysed_Data.antimatter_pseudo_rapidity_vector.size()){
+            Analysed_Data.antimatter_pseudo_rapidity_vector.push_back(0);
           }
-          Analysed_Data.matrix_antimatter_data[Vectorposition][Arrayposition]++;
+          Analysed_Data.antimatter_pseudo_rapidity_vector[pseudorapdityposition]++;
+          while (transversePposition >= Analysed_Data.antimatter_transverseP_vector.size()){
+            Analysed_Data.antimatter_transverseP_vector.push_back(0);
+          }
+          Analysed_Data.antimatter_transverseP_vector[transversePposition]++;
           antimatter_count++;
         }
       }
     }
   }
-  //Checking for correct calculations:
-  if ((matter_count != Analysed_Data.Omegaminus_count) or (antimatter_count != Analysed_Data.Omegaplus_count)){
-    std::cout << "Error: Matrix data calculation went wrong." << std::endl;
-    std::cout << "Matter matrix count: " << matter_count<< " Omega-minus count: " << Analysed_Data.Omegaminus_count << std::endl;
-    std::cout << "Antimatter matrix count: " << antimatter_count << " Omega-plus count: " << Analysed_Data.Omegaplus_count << std::endl;
-    abort();
-  }
+
 
   //Doing calculations with gathered data from vectors
   Analysed_Data.Omegaminus_average = Analysed_Data.Omegaminus_count / (double)Analysed_Data.total_particle_count;
@@ -374,15 +386,11 @@ Analysed_Data Analyse_Data(std::vector<Particle_event> Particle_event_vector, An
     Analysed_Data.average_matter_antimatter_ratio = Analysed_Data.Omegaminus_count / (double)Analysed_Data.Omegaplus_count;
   }
   
-
   return Analysed_Data;
 }
 
-//Function to display matrix data
+/*//Function to display matrix data
 void Display_matrix(Analysed_Data Analysed_Data){
-  if (!Analysed_Data.matrix_function){
-    return;
-  }
 
   //defining line string and matrix string to print later
   string line;
@@ -390,7 +398,7 @@ void Display_matrix(Analysed_Data Analysed_Data){
 
   //iterating through data anti matter matrix and adjusting letters to print more easy to read matrix
   matrix = "\n Transverse momentum and pseudorapidity matrix of Omega-minus: \n\n";
-  matrix += "|                             | -4 < n < -3 | -3 < n < -2 | -2 < n < -1 | -1 < n <  0 |  0 < n <  1 |  1 < n <  2 |  2 < n <  3 |  3 < n <  4 |\n";
+  matrix += "| pT in GeV                   | -4 < n < -3 | -3 < n < -2 | -2 < n < -1 | -1 < n <  0 |  0 < n <  1 |  1 < n <  2 |  2 < n <  3 |  3 < n <  4 |\n";
   for (int place = 0; place < 143; place++){
     matrix += "-";
   }
@@ -399,8 +407,8 @@ void Display_matrix(Analysed_Data Analysed_Data){
     line += "| " + to_string(0+(transverseP_row/2.0)) + " < pT < " + to_string((0.5+(transverseP_row/2.0)));
     while (line.length() < 30){line += " ";}
     line += "| ";
-    for (int pseudorapidity_column = 0; pseudorapidity_column < Analysed_Data.matrix_matter_data[transverseP_row].size(); pseudorapidity_column++){
-      line += to_string(Analysed_Data.matrix_matter_data[transverseP_row][pseudorapidity_column]);
+    for (int pseudorapidity_column = 0; pseudorapidity_column < Analysed_Data.matrix_matter_data[transverseP_row].matrix_row.size(); pseudorapidity_column++){
+      line += to_string(Analysed_Data.matrix_matter_data[transverseP_row].matrix_row[pseudorapidity_column]);
       while (line.length() < (44 + 14*(pseudorapidity_column))){line += " ";}
       line += "| ";
     }
@@ -414,7 +422,7 @@ void Display_matrix(Analysed_Data Analysed_Data){
   
   //iterating through data anti matter matrix and adjusting letters to print more easy to read matrix
   matrix = "\n Transverse momentum and pseudorapidity matrix of Omega-plus: \n\n";
-  matrix += "|                             | -4 < n < -3 | -3 < n < -2 | -2 < n < -1 | -1 < n <  0 |  0 < n <  1 |  1 < n <  2 |  2 < n <  3 |  3 < n <  4 |\n";
+  matrix += "| pT in GeV                   | -4 < n < -3 | -3 < n < -2 | -2 < n < -1 | -1 < n <  0 |  0 < n <  1 |  1 < n <  2 |  2 < n <  3 |  3 < n <  4 |\n";
   for (int place = 0; place < 143; place++){
     matrix += "-";
   }
@@ -423,8 +431,8 @@ void Display_matrix(Analysed_Data Analysed_Data){
     line += "| " + to_string(0+(transverseP_row/2.0)) + " < pT < " + to_string((0.5+(transverseP_row/2.0)));
     while (line.length() < 30){line += " ";}
     line += "| ";
-    for (int pseudorapidity_column = 0; pseudorapidity_column < Analysed_Data.matrix_antimatter_data[transverseP_row].size(); pseudorapidity_column++){
-      line += to_string(Analysed_Data.matrix_antimatter_data[transverseP_row][pseudorapidity_column]);
+    for (int pseudorapidity_column = 0; pseudorapidity_column < Analysed_Data.matrix_antimatter_data[transverseP_row].matrix_row.size(); pseudorapidity_column++){
+      line += to_string(Analysed_Data.matrix_antimatter_data[transverseP_row].matrix_row[pseudorapidity_column]);
       while (line.length() < (44 + 14*(pseudorapidity_column))){line += " ";}
       line += "| ";
     }
@@ -435,7 +443,7 @@ void Display_matrix(Analysed_Data Analysed_Data){
   std::cout<< matrix << std::endl;
 
   
-}
+}*/
 
 //Function to display data
 void Display_Data(Analysed_Data Analysed_Data, std::vector<Particle_event> Particle_event_vector){
@@ -446,7 +454,7 @@ void Display_Data(Analysed_Data Analysed_Data, std::vector<Particle_event> Parti
   std::cout << "Ratio of Omega-minus to Omega-plus: " << Analysed_Data.average_matter_antimatter_ratio << endl;
   //std::cout << "Uncertainty: " << sqrt(Analysed_Data.Omegaminus_count) / (double)Analysed_Data.total_particle_count << endl;
   //displaying matrix
-  Display_matrix(Analysed_Data);
+  //Display_matrix(Analysed_Data);
 }
 
 int main(){
@@ -532,6 +540,8 @@ int main(){
     Display_Data(Analysed_Data, Particle_event_vector);
     std::cout << "Finished displaying data." << endl;
 
+    //serializing results for python to read
+    serialization_results(Analysed_Data);
 
     //print time
     auto current_time = std::chrono::high_resolution_clock::now();

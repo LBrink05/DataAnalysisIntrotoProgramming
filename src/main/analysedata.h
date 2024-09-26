@@ -45,23 +45,26 @@ Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
   int matter_count = 0;
   int antimatter_count = 0;
 
-  //analysing each sample individually
-
-  for (int sample = 0; sample < raw_Data.Samplesizes.size(); sample++){
-    for (int event= 0; event < raw_Data.Samplesizes[sample]; event++){
+    for (int event= 0; event < raw_Data.Particle_event_vector.size(); event++){
       for (int particle = 0; particle < raw_Data.Particle_event_vector[event].Particles.size(); particle++){
         //comparing particles on pseudorapidity and transverseP of Omega-minus by counting
         //raw_Data.Particle_total_count++; add this if all particles enabled to get particle count
         if (raw_Data.Particle_event_vector[event].Particles[particle].PGC == 3334){
           Analysed_Data.Omegaminus_count++;
+          
         }
         else if (raw_Data.Particle_event_vector[event].Particles[particle].PGC == -3334){
           Analysed_Data.Omegaplus_count++;
         }
       }
+    
+      //std::cout << "Total omega count: "<< Analysed_Data.Omegaminus_count + Analysed_Data.Omegaplus_count << "\n";
+      //sleep(0.01);
     }
-  }
   
+  //calculations done with information already gathered from raw_data
+  Analysed_Data.Omega_Particle_total_count = Analysed_Data.Omegaminus_count + Analysed_Data.Omegaplus_count;
+
   return Analysed_Data;
 }
 
@@ -71,7 +74,7 @@ void Display_Data(Analysed_Data Analysed_Data, raw_Data raw_Data){
   std::cout << "\n";
   std::cout << "Total particle event count: " << raw_Data.Particle_event_vector.size() << "\n";
   std::cout << "Total amount of Omega-minus: " <<  Analysed_Data.Omegaminus_count << " and of Omega-plus: " << Analysed_Data.Omegaplus_count << "\n";
-
+  std::cout << "Total amount of Omega-particles: " << Analysed_Data.Omega_Particle_total_count << "\n";
   //std::cout << "Uncertainty: " << sqrt(Analysed_Data.Omegaminus_count) / (double)raw_Data.Particle_total_count<< "\n";
   //displaying matrix
   //Display_matrix(Analysed_Data);

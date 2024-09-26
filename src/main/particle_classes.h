@@ -26,18 +26,18 @@ class Particle {
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
     {
-      ar & PGC;
-      ar & Px; 
-      ar & Py; 
-      ar & Pz; 
-      ar & P;
-      ar & transverseP;
-      ar & azimutalangle;
-      ar & pseudorapidity;
+      ar & BOOST_SERIALIZATION_NVP(PGC);
+      ar & BOOST_SERIALIZATION_NVP(Px); 
+      ar & BOOST_SERIALIZATION_NVP(Py); 
+      ar & BOOST_SERIALIZATION_NVP(Pz); 
+      ar & BOOST_SERIALIZATION_NVP(P);
+      ar & BOOST_SERIALIZATION_NVP(transverseP);
+      ar & BOOST_SERIALIZATION_NVP(azimutalangle);
+      ar & BOOST_SERIALIZATION_NVP(pseudorapidity);
     }
     
   public:
-  int32_t PGC;
+  int PGC;
   float Px; 
   float Py; 
   float Pz; 
@@ -53,8 +53,8 @@ class Particle_event{
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
     {
-        ar & particlesperevent;
-        ar & Particles;
+        ar & BOOST_SERIALIZATION_NVP(particlesperevent);
+        ar & BOOST_SERIALIZATION_NVP(Particles);
     }
 
   public:
@@ -67,8 +67,8 @@ class raw_Data{
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
     {
-        ar & Particle_event_vector;
-        ar & Samplesizes;
+        ar & BOOST_SERIALIZATION_NVP(Particle_event_vector);
+        ar & BOOST_SERIALIZATION_NVP(Samplesizes);
     }
     public:
     std::vector<Particle_event> Particle_event_vector;
@@ -84,8 +84,9 @@ class Analysed_Data{
       //uses BOOST_SERIALIZATION_NVP for xml conversion
         ar & BOOST_SERIALIZATION_NVP(Omegaminus_count);
         ar & BOOST_SERIALIZATION_NVP(Omegaplus_count);
-        ar & BOOST_SERIALIZATION_NVP(Omegaminus_average);
-        ar & BOOST_SERIALIZATION_NVP(Omegaplus_average);
+        ar & BOOST_SERIALIZATION_NVP(Omega_Particle_total_count);
+        ar & BOOST_SERIALIZATION_NVP(Omegaminus_averages);
+        ar & BOOST_SERIALIZATION_NVP(Omegaplus_averages);
         ar & BOOST_SERIALIZATION_NVP(average_matter_antimatter_ratio);
         ar & BOOST_SERIALIZATION_NVP(matter_pseudo_rapidity_vector);
         ar & BOOST_SERIALIZATION_NVP(matter_transverseP_vector);
@@ -96,16 +97,15 @@ class Analysed_Data{
   public:
   uint32_t Omegaminus_count;
   uint32_t Omegaplus_count;
-  double_t Omegaminus_average;
-  double_t Omegaplus_average;
+  uint64_t Omega_Particle_total_count;
+  std::vector<double_t> Omegaminus_averages;
+  std::vector<double_t> Omegaplus_averages;
   double_t average_matter_antimatter_ratio;
   //introduce float uncertainty too
   std::vector<uint32_t> matter_pseudo_rapidity_vector;
   std::vector<uint32_t> matter_transverseP_vector;
   std::vector<uint32_t> antimatter_pseudo_rapidity_vector;
   std::vector<uint32_t> antimatter_transverseP_vector;
-  //do not encode
-  std::vector<uint32_t> particle_count_mean;
 };
 
 #endif

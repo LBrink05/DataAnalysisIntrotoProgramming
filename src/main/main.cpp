@@ -80,13 +80,16 @@ int main(){
     std::cout << "Accessing previously serialized Data." << "\n";
 
     std::vector<Particle_event> Partial_Particle_event_vector;
+    //raw_Data.Particle_event_vector.erase(raw_Data.Particle_event_vector.begin(),raw_Data.Particle_event_vector.end());
     for (float num_files= 0; num_files < dataset_num; num_files++){
       //getting sample data and inserting them into the entire particle event vector
-      Partial_Particle_event_vector = deserialization(num_files);
+      Partial_Particle_event_vector = deserialization(Partial_Particle_event_vector, num_files);
+      std::cout << "Samplesize of Vectorset: " << Partial_Particle_event_vector.size() << "\n";
       raw_Data.Samplesizes.push_back(Partial_Particle_event_vector.size());
       raw_Data.Particle_event_vector.insert(raw_Data.Particle_event_vector.end(),Partial_Particle_event_vector.begin(), Partial_Particle_event_vector.end());
-      
+      Partial_Particle_event_vector.erase(Partial_Particle_event_vector.begin(), Partial_Particle_event_vector.end());
     };
+    
     //std::cout << "Size of Particle_event_vector: " << Particle_event_vector.size() << "\n";
     std::cout << "Finished retrieving serialized Data." << "\n";
 

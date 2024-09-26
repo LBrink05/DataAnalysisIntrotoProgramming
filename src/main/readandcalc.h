@@ -78,8 +78,9 @@ int Read_Calc_Particles(raw_Data raw_Data, std::vector<std::string> Datasetpathv
     sleep(1);
 
     //int counters
-    int Particle_event_total=-1; //-1 because first one is 0
+    int Particle_event_total= -1; //-1 because first one is 0
     int Particle_event_relative = -1;
+    int Omegacount = 0;
 
     //For loop open each Datasetfile (11 total)
     std::ifstream ifs;
@@ -122,16 +123,16 @@ int Read_Calc_Particles(raw_Data raw_Data, std::vector<std::string> Datasetpathv
           if (substringvector.size() == 2){
               Particle_event_total++;
               Particle_event_relative++;
-              std::cout << "### Particle Event: " << std::fixed << Particle_event_total << " ###" << "\n";
+              //std::cout << "### Particle Event: " << std::fixed << Particle_event_total << " ###" << "\n";
               Particle_event Particle_event;
-              Particle_event.particlesperevent = (int)substringvector[1];
+              Particle_event.particlesperevent =  (uint32_t)substringvector[1];
               raw_Data.Particle_event_vector.push_back(Particle_event);
               //std::cout << Particle_event_vector.size()<< "\n";
           } 
 
           //PGC for Omega minus is 3334 and for Omega plus is -3334
-          else if ((substringvector.size() == 4) and (!Particle_exclusion) or ((Particle_exclusion) and (abs(substringvector[3]) == 3334))){
-              
+          else if ((substringvector.size() == 4) and ((!Particle_exclusion) or ((Particle_exclusion) and (abs(substringvector[3]) == 3334)))){
+              Omegacount++;
               Particle Particle;
               Particle.PGC = substringvector[3];
               Particle.Px = substringvector[0];
@@ -145,11 +146,23 @@ int Read_Calc_Particles(raw_Data raw_Data, std::vector<std::string> Datasetpathv
           }
         }
 
+        //delete later
+        int k = 0;
+        for (int i= 0; i < raw_Data.Particle_event_vector.size(); i++){
+          for (int j = 0; j < raw_Data.Particle_event_vector[i].Particles.size(); j++){
+            k++;
+          }
+        }
+        std::cout << "PARTICLES: " << k << "\n";
+        sleep(1);
+
         //serialize per datasetfile
         serialization(raw_Data.Particle_event_vector, numpaths);
         raw_Data.Particle_event_vector.erase(raw_Data.Particle_event_vector.begin(), raw_Data.Particle_event_vector.end());
         Particle_event_relative = -1;
 
+        std::cout << "Omega count: " << Omegacount << "\n";
+        
         ifs.close();
     }
         return 0;

@@ -26,26 +26,25 @@
 void serialization(std::vector<Particle_event> Particle_event_vector, int Vectorsetfile_num){
   //store data in file .> serialize
     std::cout << " Beginning Serialization of ";
-    std::string Filename = "Vectorset/Vectorset"+std::to_string(Vectorsetfile_num)+".dat";
+    std::string Filename = "Vectorset/Vectorset"+std::to_string(Vectorsetfile_num)+".xml";
     std::cout << Filename << "\n";
-    std::ofstream f(Filename, std::ofstream::binary);
-    boost::archive::binary_oarchive ar(f, boost::archive::no_header); 
-    ar << Particle_event_vector;
+    std::ofstream f(Filename);
+    boost::archive::xml_oarchive ar(f, boost::archive::no_header); 
+    ar << BOOST_SERIALIZATION_NVP(Particle_event_vector);
     f.close();
     std::cout << "Serialization complete." << "\n";
 }
 
 
 //DESERIALIZATION functions
-std::vector<Particle_event> deserialization(int num_file){
+std::vector<Particle_event> deserialization(std::vector<Particle_event> Partial_particle_event_vector, int num_file){
   //retrieve data from file > deserialize
   std::cout << " Beginning De-serialization of ";
-    std::string Filename = "Vectorset/Vectorset"+std::to_string(num_file)+".dat";
+    std::string Filename = "Vectorset/Vectorset"+std::to_string(num_file)+".xml";
     std::cout << Filename << "\n";
-    std::ifstream i_f(Filename, std::ifstream::binary);
-    boost::archive::binary_iarchive i_ar(i_f, boost::archive::no_header);
-    std::vector<Particle_event> Partial_particle_event_vector;
-    i_ar >> Partial_particle_event_vector;
+    std::ifstream i_f(Filename);
+    boost::archive::xml_iarchive i_ar(i_f, boost::archive::no_header);
+    i_ar >> BOOST_SERIALIZATION_NVP(Partial_particle_event_vector);
     i_f.close();
     std::cout << "De-serialization complete."<< "\n";
     return Partial_particle_event_vector;

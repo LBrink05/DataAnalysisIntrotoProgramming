@@ -1,8 +1,15 @@
 <Analysed_Data class_id="0" tracking_level="0" version="0">
-	<Omegaminus_count>5940</Omegaminus_count>
-	<Omegaplus_count>5440</Omegaplus_count>
-	<Omegaminus_average>0.00000000000000000e+00</Omegaminus_average>
-	<Omegaplus_average>0.00000000000000000e+00</Omegaplus_average>
+	<Omegaminus_count>5482</Omegaminus_count>
+	<Omegaplus_count>5318</Omegaplus_count>
+	<Omega_Particle_total_count>10800</Omega_Particle_total_count>
+	<Omegaminus_averages>
+		<count>0</count>
+		<item_version>0</item_version>
+	</Omegaminus_averages>
+	<Omegaplus_averages>
+		<count>0</count>
+		<item_version>0</item_version>
+	</Omegaplus_averages>
 	<average_matter_antimatter_ratio>0.00000000000000000e+00</average_matter_antimatter_ratio>
 	<matter_pseudo_rapidity_vector>
 		<count>0</count>

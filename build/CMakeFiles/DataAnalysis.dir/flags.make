@@ -4,7 +4,7 @@
 # compile CXX with /usr/bin/c++
 CXX_DEFINES = -DBOOST_SERIALIZATION_DYN_LINK -DBOOST_SERIALIZATION_NO_LIB
 
-CXX_INCLUDES = 
+CXX_INCLUDES = -I/home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/src/main
 
 CXX_FLAGS =  -no-pie
 

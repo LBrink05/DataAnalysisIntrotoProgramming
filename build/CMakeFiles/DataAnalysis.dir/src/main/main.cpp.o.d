@@ -649,4 +649,8 @@ CMakeFiles/DataAnalysis.dir/src/main/main.cpp.o: \
  /usr/include/boost/serialization/detail/is_default_constructible.hpp \
  /usr/include/boost/utility/enable_if.hpp \
  /usr/include/boost/core/enable_if.hpp \
- /usr/include/boost/serialization/collection_traits.hpp
+ /usr/include/boost/serialization/collection_traits.hpp \
+ /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/src/main/particle_classes.h \
+ /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/src/main/serialization.h \
+ /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/src/main/readandcalc.h \
+ /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/src/main/analysedata.h

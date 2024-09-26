@@ -3,6 +3,10 @@
 
 CMakeFiles/DataAnalysis.dir/src/main/main.cpp.o
  /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/src/main/main.cpp
+ /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/src/main/analysedata.h
+ /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/src/main/particle_classes.h
+ /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/src/main/readandcalc.h
+ /home/liam/Desktop/Development/IntrotoProgramming/DataAnalysisIntrotoProgramming/src/main/serialization.h
  /usr/include/alloca.h
  /usr/include/asm-generic/errno-base.h
  /usr/include/asm-generic/errno.h

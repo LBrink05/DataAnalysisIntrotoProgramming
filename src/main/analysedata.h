@@ -27,13 +27,14 @@
 #include "serialization.h"
 #include "readandcalc.h"
 
-double stdDeviation(std::vector<double> Sample, float mean){
-  float sum = 0;
+double stdDeviation(std::vector<double> Sample, double mean){
+  double sum = 0;
     for (int number = 0; number < Sample.size(); number++) {
       sum += std::pow((Sample[number] - mean), 2);
     }
   return (double)(std::sqrt(sum / Sample.size()));
 }
+
 
 //Function to calculate certain averages etc from particle events
 Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
@@ -47,13 +48,24 @@ Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
   uint32_t Omega_minus_per_event_count = 0;
   uint32_t Omega_plus_per_event_count = 0;
 
-  //sample vars
+  //Variables used for pseudo-rapidity and transverse momentum
+  int transversePposition = 0;
+  int pseudorapidityposition = 0;
+  const int offset_transverseP = 0;
+  const int offset_pseudorapidity = 4;
+  const float step_transverseP = 0.5;
+  const float step_pseudorapidity = 1;
+
+
+  //Variables used for mean, uncertainty, skewness, kurtosis
   int sample = 0;
   int past_sample_events = 0;
   int past_Omega_minus_count = 0;
+  double Sample_Event_Omega_minus_mean = 0;
   double Sample_Omega_minus_mean = 0;
   std::vector<double> Sample_Omega_minus_mean_vector;
   int past_Omega_plus_count = 0;
+  double Sample_Event_Omega_plus_mean = 0;
   double Sample_Omega_plus_mean = 0;
   std::vector<double> Sample_Omega_plus_mean_vector;
 
@@ -61,16 +73,44 @@ Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
     for (int event= 0; event < raw_Data.Particle_event_vector.size(); event++){
       for (int particle = 0; particle < raw_Data.Particle_event_vector[event].Particles.size(); particle++){
         if (abs(raw_Data.Particle_event_vector[event].Particles[particle].PGC) == 3334){
-
+          //gather info on pseudo-rapidity and transverse momentum
+          //formula is floor((value + offset) / step)
+          transversePposition = floor(raw_Data.Particle_event_vector[event].Particles[particle].transverseP + offset_transverseP / step_transverseP);
+          pseudorapidityposition  = floor((raw_Data.Particle_event_vector[event].Particles[particle].pseudorapidity + offset_pseudorapidity) / step_pseudorapidity);
           //comparing particles on pseudorapidity and transverseP of Omega-minus by counting
           //raw_Data.Particle_total_count++; add this if all particles enabled to get particle count
+          //MATTER OMEGA MINUS
           if (raw_Data.Particle_event_vector[event].Particles[particle].PGC == 3334){
             Analysed_Data.Omegaminus_count++;
             Omega_minus_per_event_count++;
+            
+            while (transversePposition >= Analysed_Data.Results.matter_transverseP_vector.size()){
+              Analysed_Data.Results.matter_transverseP_vector.push_back(0);
+            }
+            Analysed_Data.Results.matter_transverseP_vector[transversePposition]++;
+            while (pseudorapidityposition >= Analysed_Data.Results.matter_pseudo_rapidity_vector.size()){
+              Analysed_Data.Results.matter_pseudo_rapidity_vector.push_back(0);
+            }
+            Analysed_Data.Results.matter_pseudo_rapidity_vector[pseudorapidityposition]++;
+
+            Sample_Event_Omega_minus_mean += 1 / (double)raw_Data.Particle_event_vector[event].particlesperevent;
+
           }
+          //ANTI MATTER OMEGA PLUS
           else if (raw_Data.Particle_event_vector[event].Particles[particle].PGC == -3334){
             Analysed_Data.Omegaplus_count++;
             Omega_plus_per_event_count++;
+
+            while (transversePposition >= Analysed_Data.Results.antimatter_transverseP_vector.size()){
+              Analysed_Data.Results.antimatter_transverseP_vector.push_back(0);
+            }
+            Analysed_Data.Results.antimatter_transverseP_vector[transversePposition]++;
+            while (pseudorapidityposition >= Analysed_Data.Results.antimatter_pseudo_rapidity_vector.size()){
+              Analysed_Data.Results.antimatter_pseudo_rapidity_vector.push_back(0);
+            }
+            Analysed_Data.Results.antimatter_pseudo_rapidity_vector[pseudorapidityposition]++;
+
+            Sample_Event_Omega_plus_mean += 1 / (double)raw_Data.Particle_event_vector[event].particlesperevent;
           }
         }
       }
@@ -82,8 +122,11 @@ Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
 
       //calculting mean of each sample for Matter and Antimatter
       if (event < (raw_Data.Samplesizes[sample] + past_sample_events)){
-        Sample_Omega_minus_mean +=  (Analysed_Data.Omegaminus_count - past_Omega_minus_count) / (double)raw_Data.Samplesizes[sample];
-        Sample_Omega_plus_mean +=  (Analysed_Data.Omegaplus_count - past_Omega_plus_count) / (double)raw_Data.Samplesizes[sample];
+        //Sample_Omega_minus_mean +=  (Analysed_Data.Omegaminus_count - past_Omega_minus_count) / (double)raw_Data.Samplesizes[sample];
+        //Sample_Omega_plus_mean +=  (Analysed_Data.Omegaplus_count - past_Omega_plus_count) / (double)raw_Data.Samplesizes[sample];
+        Sample_Omega_minus_mean +=  Sample_Event_Omega_minus_mean / (double)raw_Data.Samplesizes[sample];
+        Sample_Omega_plus_mean +=  Sample_Event_Omega_plus_mean / (double)raw_Data.Samplesizes[sample];
+
       }
       if ((event == (raw_Data.Samplesizes[sample] + past_sample_events)) or event == raw_Data.Particle_event_vector.size()-1){
         Sample_Omega_minus_mean_vector.push_back(Sample_Omega_minus_mean);
@@ -95,6 +138,8 @@ Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
       }
 
       //reset variables per event
+      Sample_Event_Omega_minus_mean = 0;
+      Sample_Event_Omega_plus_mean = 0;
       Omega_minus_per_event_count = 0;
       Omega_plus_per_event_count = 0;
     }
@@ -119,16 +164,15 @@ Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
 //Function to display data
 void Display_Data(Analysed_Data Analysed_Data, raw_Data raw_Data){
   
-  std::cout << "\n";
+  std::cout << "\n== Analysis Results ==\n";
   std::cout << "Total particle event count: " << raw_Data.Particle_event_vector.size() << "\n";
   std::cout << "Total amount of Omega-minus: " <<  Analysed_Data.Omegaminus_count << " and of Omega-plus: " << Analysed_Data.Omegaplus_count << "\n";
   std::cout << "Total amount of Omega-particles: " << Analysed_Data.Omega_Particle_total_count << "\n";
   std::cout << "Difference of total amount of Omega-particles: " << std::fixed << Analysed_Data.Omega_Particle_total_difference << "\n";
   std::cout << "Total amount of events with equal Omega-minus and Omega-plus (Not 0,0): " << std::fixed << Analysed_Data.Omega_event_equal_amount_count << "\n";
-  std::cout << "Mean of Omega minus: " << std::fixed << Analysed_Data.Results.Omega_minus_mean << " +- " << Analysed_Data.Results.Omega_minus_mean_uncertainty << " (+-" << Analysed_Data.Results.Omega_minus_mean / Analysed_Data.Results.Omega_minus_mean_uncertainty << " Sigma)" << "\n";
-  std::cout << "Mean of Omega plus: " << std::fixed << Analysed_Data.Results.Omega_plus_mean << " +- " << Analysed_Data.Results.Omega_plus_mean_uncertainty << " (+-" << Analysed_Data.Results.Omega_plus_mean / Analysed_Data.Results.Omega_plus_mean_uncertainty << " Sigma)"<< "\n";
-  //std::cout << "Arithmetic mean of mean of Omega-particles per events per sample: " << std::fixed << Analysed_Data.sample_event_particle_mean << "\n";
-  //std::cout << "Uncertainty: " << sqrt(Analysed_Data.Omegaminus_count) / (double)raw_Data.Particle_total_count<< "\n";
+  std::cout << "Mean of Omega minus: " << std::fixed << Analysed_Data.Results.Omega_minus_mean << " +- " << Analysed_Data.Results.Omega_minus_mean_uncertainty << "\n";
+  std::cout << "Mean of Omega plus: " << std::fixed << Analysed_Data.Results.Omega_plus_mean << " +- " << Analysed_Data.Results.Omega_plus_mean_uncertainty <<  "\n";
+
   std::cout << "\n";
 }
 

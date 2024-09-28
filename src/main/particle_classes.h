@@ -85,12 +85,20 @@ class Sample{
       ar & BOOST_SERIALIZATION_NVP(Omega_minus_mean_uncertainty);
       ar & BOOST_SERIALIZATION_NVP(Omega_plus_mean);
       ar & BOOST_SERIALIZATION_NVP(Omega_plus_mean_uncertainty);
+      ar & BOOST_SERIALIZATION_NVP(matter_pseudo_rapidity_vector);
+      ar & BOOST_SERIALIZATION_NVP(matter_transverseP_vector);
+      ar & BOOST_SERIALIZATION_NVP(antimatter_pseudo_rapidity_vector);
+      ar & BOOST_SERIALIZATION_NVP(antimatter_transverseP_vector);
     }
    public:
     double Omega_minus_mean;
     double Omega_minus_mean_uncertainty;
     double Omega_plus_mean;
     double Omega_plus_mean_uncertainty;
+    std::vector<uint32_t> matter_pseudo_rapidity_vector;
+    std::vector<uint32_t> matter_transverseP_vector;
+    std::vector<uint32_t> antimatter_pseudo_rapidity_vector;
+    std::vector<uint32_t> antimatter_transverseP_vector;
     
 
 };
@@ -109,10 +117,6 @@ class Analysed_Data{
         ar & BOOST_SERIALIZATION_NVP(Omega_Particle_total_count);
         ar & BOOST_SERIALIZATION_NVP(Omega_Particle_total_difference);
         ar & BOOST_SERIALIZATION_NVP(Results);
-        ar & BOOST_SERIALIZATION_NVP(matter_pseudo_rapidity_vector);
-        ar & BOOST_SERIALIZATION_NVP(matter_transverseP_vector);
-        ar & BOOST_SERIALIZATION_NVP(antimatter_pseudo_rapidity_vector);
-        ar & BOOST_SERIALIZATION_NVP(antimatter_transverseP_vector);
     }
   
   public:
@@ -122,10 +126,6 @@ class Analysed_Data{
   uint64_t Omega_Particle_total_count;
   uint64_t Omega_Particle_total_difference;
   Sample Results;
-  std::vector<uint32_t> matter_pseudo_rapidity_vector;
-  std::vector<uint32_t> matter_transverseP_vector;
-  std::vector<uint32_t> antimatter_pseudo_rapidity_vector;
-  std::vector<uint32_t> antimatter_transverseP_vector;
 };
 
 #endif

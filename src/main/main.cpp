@@ -31,7 +31,7 @@ int main(){
 
     //Keep track of time at start of program
     auto start_time = std::chrono::high_resolution_clock::now();
-    std::cout << "Starting Program." << "\n";
+    std::cout << "== Starting Program. ==" << "\n";
     
     //Ask if serialization should be done
     std::cout << "If no serialization, files will be used." << "\n";

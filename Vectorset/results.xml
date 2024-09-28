@@ -5,10 +5,10 @@
 	<Omega_Particle_total_count>10800</Omega_Particle_total_count>
 	<Omega_Particle_total_difference>164</Omega_Particle_total_difference>
 	<Results class_id="1" tracking_level="0" version="0">
-		<Omega_minus_mean>1.07111661019953304e-04</Omega_minus_mean>
-		<Omega_minus_mean_uncertainty>5.40765149973759028e-05</Omega_minus_mean_uncertainty>
-		<Omega_plus_mean>1.01071069696360291e-04</Omega_plus_mean>
-		<Omega_plus_mean_uncertainty>5.32000941196372808e-05</Omega_plus_mean_uncertainty>
+		<Omega_minus_mean>1.09639999999999998e-03</Omega_minus_mean>
+		<Omega_minus_mean_uncertainty>3.64395389652504012e-05</Omega_minus_mean_uncertainty>
+		<Omega_plus_mean>1.06360000000000005e-03</Omega_plus_mean>
+		<Omega_plus_mean_uncertainty>4.44504218202707257e-05</Omega_plus_mean_uncertainty>
 		<matter_pseudo_rapidity_vector>
 			<count>8</count>
 			<item_version>0</item_version>

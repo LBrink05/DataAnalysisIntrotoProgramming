@@ -92,10 +92,8 @@ Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
               Analysed_Data.Results.matter_pseudo_rapidity_vector.push_back(0);
             }
             Analysed_Data.Results.matter_pseudo_rapidity_vector[pseudorapidityposition]++;
-
-            Sample_Event_Omega_minus_mean += 1 / (double)raw_Data.Particle_event_vector[event].particlesperevent;
-
           }
+          
           //ANTI MATTER OMEGA PLUS
           else if (raw_Data.Particle_event_vector[event].Particles[particle].PGC == -3334){
             Analysed_Data.Omegaplus_count++;
@@ -109,8 +107,6 @@ Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
               Analysed_Data.Results.antimatter_pseudo_rapidity_vector.push_back(0);
             }
             Analysed_Data.Results.antimatter_pseudo_rapidity_vector[pseudorapidityposition]++;
-
-            Sample_Event_Omega_plus_mean += 1 / (double)raw_Data.Particle_event_vector[event].particlesperevent;
           }
         }
       }
@@ -120,15 +116,9 @@ Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
         Analysed_Data.Omega_event_equal_amount_count++;
       }
 
-      //calculting mean of each sample for Matter and Antimatter
-      if (event < (raw_Data.Samplesizes[sample] + past_sample_events)){
-        //Sample_Omega_minus_mean +=  (Analysed_Data.Omegaminus_count - past_Omega_minus_count) / (double)raw_Data.Samplesizes[sample];
-        //Sample_Omega_plus_mean +=  (Analysed_Data.Omegaplus_count - past_Omega_plus_count) / (double)raw_Data.Samplesizes[sample];
-        Sample_Omega_minus_mean +=  Sample_Event_Omega_minus_mean / (double)raw_Data.Samplesizes[sample];
-        Sample_Omega_plus_mean +=  Sample_Event_Omega_plus_mean / (double)raw_Data.Samplesizes[sample];
-
-      }
       if ((event == (raw_Data.Samplesizes[sample] + past_sample_events)) or event == raw_Data.Particle_event_vector.size()-1){
+        Sample_Omega_minus_mean = (Analysed_Data.Omegaminus_count - past_Omega_minus_count) / (double)raw_Data.Samplesizes[sample];
+        Sample_Omega_plus_mean = (Analysed_Data.Omegaplus_count - past_Omega_plus_count) / (double)raw_Data.Samplesizes[sample];
         Sample_Omega_minus_mean_vector.push_back(Sample_Omega_minus_mean);
         Sample_Omega_plus_mean_vector.push_back(Sample_Omega_plus_mean);
         past_Omega_minus_count = Analysed_Data.Omegaminus_count;

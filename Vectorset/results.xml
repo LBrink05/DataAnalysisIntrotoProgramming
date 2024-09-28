@@ -1,16 +1,15 @@
 <Analysed_Data class_id="0" tracking_level="0" version="0">
 	<Omegaminus_count>5482</Omegaminus_count>
 	<Omegaplus_count>5318</Omegaplus_count>
+	<Omega_event_equal_amount_count>340</Omega_event_equal_amount_count>
 	<Omega_Particle_total_count>10800</Omega_Particle_total_count>
-	<Omegaminus_averages>
-		<count>0</count>
-		<item_version>0</item_version>
-	</Omegaminus_averages>
-	<Omegaplus_averages>
-		<count>0</count>
-		<item_version>0</item_version>
-	</Omegaplus_averages>
-	<average_matter_antimatter_ratio>0.00000000000000000e+00</average_matter_antimatter_ratio>
+	<Omega_Particle_total_difference>164</Omega_Particle_total_difference>
+	<Results class_id="1" tracking_level="0" version="0">
+		<Omega_minus_mean>1.50520258479961080e+03</Omega_minus_mean>
+		<Omega_minus_mean_uncertainty>7.80201721191406250e+02</Omega_minus_mean_uncertainty>
+		<Omega_plus_mean>1.49804077279885632e+03</Omega_plus_mean>
+		<Omega_plus_mean_uncertainty>7.78972656250000000e+02</Omega_plus_mean_uncertainty>
+	</Results>
 	<matter_pseudo_rapidity_vector>
 		<count>0</count>
 		<item_version>0</item_version>

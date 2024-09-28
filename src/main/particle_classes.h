@@ -75,6 +75,27 @@ class raw_Data{
     std::vector<uint32_t> Samplesizes;
 };
 
+//class to define all the numbers we care about
+class Sample{
+   friend class boost::serialization::access;
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version)
+    {
+      ar & BOOST_SERIALIZATION_NVP(Omega_minus_mean);
+      ar & BOOST_SERIALIZATION_NVP(Omega_minus_mean_uncertainty);
+      ar & BOOST_SERIALIZATION_NVP(Omega_plus_mean);
+      ar & BOOST_SERIALIZATION_NVP(Omega_plus_mean_uncertainty);
+    }
+   public:
+    double Omega_minus_mean;
+    double Omega_minus_mean_uncertainty;
+    double Omega_plus_mean;
+    double Omega_plus_mean_uncertainty;
+    
+
+};
+
+
 //Class to keep track of analysed information
 class Analysed_Data{
   friend class boost::serialization::access;
@@ -84,10 +105,10 @@ class Analysed_Data{
       //uses BOOST_SERIALIZATION_NVP for xml conversion
         ar & BOOST_SERIALIZATION_NVP(Omegaminus_count);
         ar & BOOST_SERIALIZATION_NVP(Omegaplus_count);
+        ar & BOOST_SERIALIZATION_NVP(Omega_event_equal_amount_count);
         ar & BOOST_SERIALIZATION_NVP(Omega_Particle_total_count);
-        ar & BOOST_SERIALIZATION_NVP(Omegaminus_averages);
-        ar & BOOST_SERIALIZATION_NVP(Omegaplus_averages);
-        ar & BOOST_SERIALIZATION_NVP(average_matter_antimatter_ratio);
+        ar & BOOST_SERIALIZATION_NVP(Omega_Particle_total_difference);
+        ar & BOOST_SERIALIZATION_NVP(Results);
         ar & BOOST_SERIALIZATION_NVP(matter_pseudo_rapidity_vector);
         ar & BOOST_SERIALIZATION_NVP(matter_transverseP_vector);
         ar & BOOST_SERIALIZATION_NVP(antimatter_pseudo_rapidity_vector);
@@ -97,11 +118,10 @@ class Analysed_Data{
   public:
   uint32_t Omegaminus_count;
   uint32_t Omegaplus_count;
+  uint32_t Omega_event_equal_amount_count;
   uint64_t Omega_Particle_total_count;
-  std::vector<double_t> Omegaminus_averages;
-  std::vector<double_t> Omegaplus_averages;
-  double_t average_matter_antimatter_ratio;
-  //introduce float uncertainty too
+  uint64_t Omega_Particle_total_difference;
+  Sample Results;
   std::vector<uint32_t> matter_pseudo_rapidity_vector;
   std::vector<uint32_t> matter_transverseP_vector;
   std::vector<uint32_t> antimatter_pseudo_rapidity_vector;

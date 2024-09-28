@@ -8,6 +8,7 @@
 #include <vector>
 #include <cmath>
 #include <iomanip>
+#include <cstdlib>
 //for timekeeping and pausing
 #include <chrono>
 #include <thread>
@@ -60,19 +61,19 @@ int main(){
     //object for analysed Data
     Analysed_Data Analysed_Data;
     //amount of datasets
-    uint8_t dataset_num = 11;
+    uint8_t Dataset_num = 10;
 
     //serializing data
     if (serialize == true){
     //Get paths of every dataset file
     std::cout << "Getting Datasetpaths." << "\n";
     std::vector<std::string> Datasetpathvector;
-    Datasetpathvector = get_paths(Datasetpathvector, dataset_num);
+    Datasetpathvector = get_paths(Datasetpathvector, Dataset_num);
     std::cout << "Finished getting Datasetpaths." << "\n";
 
     //Reading dataset files and serializing
     std::cout << "Reading Datasets, calculating and serializing Vectors." << "\n";
-    Read_Calc_Particles(raw_Data, Datasetpathvector, dataset_num);
+    Read_Calc_Particles(raw_Data, Datasetpathvector, Dataset_num);
     std::cout << "Finished reading, calculating and serializing." << "\n";
     }
 
@@ -81,7 +82,7 @@ int main(){
 
     std::vector<Particle_event> Partial_Particle_event_vector;
     //raw_Data.Particle_event_vector.erase(raw_Data.Particle_event_vector.begin(),raw_Data.Particle_event_vector.end());
-    for (float num_files= 0; num_files < dataset_num; num_files++){
+    for (float num_files= 1; num_files <= Dataset_num; num_files++){
       //getting sample data and inserting them into the entire particle event vector
       Partial_Particle_event_vector = deserialization(Partial_Particle_event_vector, num_files);
       std::cout << "Samplesize of Vectorset: " << Partial_Particle_event_vector.size() << "\n";

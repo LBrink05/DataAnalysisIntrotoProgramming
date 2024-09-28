@@ -23,7 +23,7 @@
 #include "serialization.h"
 
 //Getting paths of the different Datasets
-std::vector<std::string> get_paths(std::vector<std::string> Datasetpathvector, int dataset_num){
+std::vector<std::string> get_paths(std::vector<std::string> Datasetpathvector, int Dataset_num){
     //Requesting Directory if not me
     std::cout << "Do you want to use the default Dataset directory? Y/N" << "\n";
     std::string answer;
@@ -46,8 +46,9 @@ std::vector<std::string> get_paths(std::vector<std::string> Datasetpathvector, i
     sleep(1);
     
     //Getting all filepaths
-    for (int set= 0; set < dataset_num; set++){
+    for (int set= 1; set <= (Dataset_num); set++){
         std::string Dataset = (answer + "/output-Set" + std::to_string(set)) + ".txt";
+        std::cout << "Using Dataset files: " <<  Dataset << "\n";
         Datasetpathvector.push_back(Dataset);
         }
 
@@ -58,24 +59,8 @@ std::vector<std::string> get_paths(std::vector<std::string> Datasetpathvector, i
 //Function for calculating and reading Particles
 int Read_Calc_Particles(raw_Data raw_Data, std::vector<std::string> Datasetpathvector, uint8_t Dataset_num){
     //Asking if Particles should be excluded
-    bool Particle_exclusion;
-    std::cout << "Do you want to only read omega particles? Y/N" << "\n";
-    std::string answer;
-    std::cin >> answer;
-    if (answer == "Y" | answer == "y" ){
-      Particle_exclusion = true;
-      std::cout << "Reading only omega particles." << "\n";
-    }
-    else if (answer == "N" | answer == "n" ){
-      Particle_exclusion = false;
-      std::cout << "Reading all particles." << "\n";
-    }
-    else{
-      std::cout << "Error: Wrong Input." << "\n";
-      abort();
-    }
-    //pause to read choice
-    sleep(1);
+    bool Particle_exclusion = true;
+    std::cout << "Reading only Omega-particles." << "\n";
 
     //int counters
     int Particle_event_total= -1; //-1 because first one is 0
@@ -84,14 +69,14 @@ int Read_Calc_Particles(raw_Data raw_Data, std::vector<std::string> Datasetpathv
 
     //For loop open each Datasetfile (11 total)
     std::ifstream ifs;
-    for (int numpaths = 0; numpaths < Dataset_num; numpaths++){
+    for (int numpaths = 1; numpaths <= Dataset_num; numpaths++){
         
         //open specific file
-        ifs.open(Datasetpathvector[numpaths]);
+        ifs.open(Datasetpathvector[numpaths-1]);
 
         //Error handling of opening file
         if (!ifs.is_open()){
-          std::cout << "Error: Incorrect File Directory" << "\n";
+          std::cout << "Error: Incorrect File: " << Datasetpathvector[numpaths]<< "\n";
           abort();
         }
         else if (ifs.is_open()){
@@ -146,22 +131,12 @@ int Read_Calc_Particles(raw_Data raw_Data, std::vector<std::string> Datasetpathv
           }
         }
 
-        //delete later
-        int k = 0;
-        for (int i= 0; i < raw_Data.Particle_event_vector.size(); i++){
-          for (int j = 0; j < raw_Data.Particle_event_vector[i].Particles.size(); j++){
-            k++;
-          }
-        }
-        std::cout << "PARTICLES: " << k << "\n";
-        sleep(1);
-
         //serialize per datasetfile
         serialization(raw_Data.Particle_event_vector, numpaths);
         raw_Data.Particle_event_vector.erase(raw_Data.Particle_event_vector.begin(), raw_Data.Particle_event_vector.end());
         Particle_event_relative = -1;
 
-        std::cout << "Omega count: " << Omegacount << "\n";
+        std::cout << "Amount of Omega-particles per sample file: " << Omegacount << "\n";
         
         ifs.close();
     }

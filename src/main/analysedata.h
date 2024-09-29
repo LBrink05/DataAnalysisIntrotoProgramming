@@ -27,6 +27,7 @@
 #include "serialization.h"
 #include "readandcalc.h"
 
+//sqrt(Sum of (x_i - mean)²)
 double stdDeviation(std::vector<double> Sample, double mean){
   double sum = 0;
     for (int number = 0; number < Sample.size(); number++) {
@@ -93,7 +94,7 @@ Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
             }
             Analysed_Data.Results.matter_pseudo_rapidity_vector[pseudorapidityposition]++;
           }
-          
+
           //ANTI MATTER OMEGA PLUS
           else if (raw_Data.Particle_event_vector[event].Particles[particle].PGC == -3334){
             Analysed_Data.Omegaplus_count++;
@@ -142,6 +143,10 @@ Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
   Analysed_Data.Results.Omega_plus_mean = std::accumulate(Sample_Omega_plus_mean_vector.begin(), Sample_Omega_plus_mean_vector.end(), 0.0) / Sample_Omega_plus_mean_vector.size();
   Analysed_Data.Results.Omega_plus_mean_uncertainty = stdDeviation(Sample_Omega_plus_mean_vector, Analysed_Data.Results.Omega_plus_mean);
   
+  //FIX THIS
+  Analysed_Data.Results.Omega_mean_difference = Analysed_Data.Results.Omega_minus_mean - Analysed_Data.Results.Omega_plus_mean;
+  Analysed_Data.Results.Omega_mean_difference_uncertainty = std::sqrt((pow((Analysed_Data.Results.Omega_minus_mean - Analysed_Data.Results.Omega_mean_difference_uncertainty), 2) + pow((Analysed_Data.Results.Omega_plus_mean - Analysed_Data.Results.Omega_mean_difference_uncertainty), 2)) / 2);
+
   //calculations done with information already gathered from raw_data
   Analysed_Data.Omega_Particle_total_count = Analysed_Data.Omegaminus_count + Analysed_Data.Omegaplus_count;
   //difference of matter to antimatter
@@ -160,8 +165,10 @@ void Display_Data(Analysed_Data Analysed_Data, raw_Data raw_Data){
   std::cout << "Total amount of Omega-particles: " << Analysed_Data.Omega_Particle_total_count << "\n";
   std::cout << "Difference of total amount of Omega-particles: " << std::fixed << Analysed_Data.Omega_Particle_total_difference << "\n";
   std::cout << "Total amount of events with equal Omega-minus and Omega-plus (Not 0,0): " << std::fixed << Analysed_Data.Omega_event_equal_amount_count << "\n";
-  std::cout << "Mean of Omega minus: " << std::fixed << Analysed_Data.Results.Omega_minus_mean << " +- " << Analysed_Data.Results.Omega_minus_mean_uncertainty << "\n";
-  std::cout << "Mean of Omega plus: " << std::fixed << Analysed_Data.Results.Omega_plus_mean << " +- " << Analysed_Data.Results.Omega_plus_mean_uncertainty <<  "\n";
+  std::cout << "Mean of Omega-minus: " << std::fixed << Analysed_Data.Results.Omega_minus_mean << " +- " << Analysed_Data.Results.Omega_minus_mean_uncertainty << "\n";
+  std::cout << "Mean of Omega-plus: " << std::fixed << Analysed_Data.Results.Omega_plus_mean << " +- " << Analysed_Data.Results.Omega_plus_mean_uncertainty <<  "\n";
+  std::cout << "Mean difference of Omega-minus and Omega-plus: " << std::fixed << Analysed_Data.Results.Omega_mean_difference << ", Combined Uncertainty: " << Analysed_Data.Results.Omega_mean_difference_uncertainty << "\n";
+  std::cout << "Sigma away: " << Analysed_Data.Results.Omega_mean_difference / Analysed_Data.Results.Omega_mean_difference_uncertainty << "\n";
 
   std::cout << "\n";
 }

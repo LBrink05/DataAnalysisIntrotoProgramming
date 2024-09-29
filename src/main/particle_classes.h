@@ -95,6 +95,8 @@ class Sample{
     double Omega_minus_mean_uncertainty;
     double Omega_plus_mean;
     double Omega_plus_mean_uncertainty;
+    double Omega_mean_difference;
+    double Omega_mean_difference_uncertainty;
     std::vector<uint32_t> matter_pseudo_rapidity_vector;
     std::vector<uint32_t> matter_transverseP_vector;
     std::vector<uint32_t> antimatter_pseudo_rapidity_vector;

@@ -6,9 +6,19 @@
 	<Omega_Particle_total_difference>164</Omega_Particle_total_difference>
 	<Results class_id="1" tracking_level="0" version="0">
 		<Omega_minus_mean>1.09639999999999998e-03</Omega_minus_mean>
-		<Omega_minus_mean_uncertainty>3.64395389652504012e-05</Omega_minus_mean_uncertainty>
+		<Omega_minus_mean_uncertainty>3.30696535390650401e-02</Omega_minus_mean_uncertainty>
 		<Omega_plus_mean>1.06360000000000005e-03</Omega_plus_mean>
-		<Omega_plus_mean_uncertainty>4.44504218202707257e-05</Omega_plus_mean_uncertainty>
+		<Omega_plus_mean_uncertainty>3.25706831794392096e-02</Omega_plus_mean_uncertainty>
+		<Omega_mean_difference>3.27999999999999299e-05</Omega_mean_difference>
+		<Omega_mean_combined_uncertainty>6.56403367185042497e-02</Omega_mean_combined_uncertainty>
+		<Omega_minus_skewness>3.02127322650107146e+01</Omega_minus_skewness>
+		<Omega_minus_skewness_uncertainty>1.26480805335359115e-321</Omega_minus_skewness_uncertainty>
+		<Omega_plus_skewness>3.06828052505977595e+01</Omega_plus_skewness>
+		<Omega_plus_skewness_uncertainty>0.00000000000000000e+00</Omega_plus_skewness_uncertainty>
+		<Omega_minus_kurtosis>5.05937354574373785e+03</Omega_minus_kurtosis>
+		<Omega_minus_kurtosis_uncertainty>6.43219480463371244e-310</Omega_minus_kurtosis_uncertainty>
+		<Omega_plus_kurtosis>5.25247510243770466e+03</Omega_plus_kurtosis>
+		<Omega_plus_kurtosis_uncertainty>0.00000000000000000e+00</Omega_plus_kurtosis_uncertainty>
 		<matter_pseudo_rapidity_vector>
 			<count>8</count>
 			<item_version>0</item_version>

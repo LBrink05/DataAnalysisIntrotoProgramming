@@ -85,6 +85,16 @@ class Sample{
       ar & BOOST_SERIALIZATION_NVP(Omega_minus_mean_uncertainty);
       ar & BOOST_SERIALIZATION_NVP(Omega_plus_mean);
       ar & BOOST_SERIALIZATION_NVP(Omega_plus_mean_uncertainty);
+      ar & BOOST_SERIALIZATION_NVP(Omega_mean_difference);
+      ar & BOOST_SERIALIZATION_NVP(Omega_mean_combined_uncertainty);
+      ar & BOOST_SERIALIZATION_NVP(Omega_minus_skewness);
+      ar & BOOST_SERIALIZATION_NVP(Omega_minus_skewness_uncertainty);
+      ar & BOOST_SERIALIZATION_NVP(Omega_plus_skewness);
+      ar & BOOST_SERIALIZATION_NVP(Omega_plus_skewness_uncertainty);
+      ar & BOOST_SERIALIZATION_NVP(Omega_minus_kurtosis);
+      ar & BOOST_SERIALIZATION_NVP(Omega_minus_kurtosis_uncertainty);
+      ar & BOOST_SERIALIZATION_NVP(Omega_plus_kurtosis);
+      ar & BOOST_SERIALIZATION_NVP(Omega_plus_kurtosis_uncertainty);
       ar & BOOST_SERIALIZATION_NVP(matter_pseudo_rapidity_vector);
       ar & BOOST_SERIALIZATION_NVP(matter_transverseP_vector);
       ar & BOOST_SERIALIZATION_NVP(antimatter_pseudo_rapidity_vector);
@@ -96,7 +106,16 @@ class Sample{
     double Omega_plus_mean;
     double Omega_plus_mean_uncertainty;
     double Omega_mean_difference;
-    double Omega_mean_difference_uncertainty;
+    double Omega_mean_combined_uncertainty;
+    double Omega_mean_sigma;
+    double Omega_minus_skewness;
+    double Omega_minus_skewness_uncertainty;
+    double Omega_plus_skewness;
+    double Omega_plus_skewness_uncertainty;
+    double Omega_minus_kurtosis;
+    double Omega_minus_kurtosis_uncertainty;
+    double Omega_plus_kurtosis;
+    double Omega_plus_kurtosis_uncertainty;
     std::vector<uint32_t> matter_pseudo_rapidity_vector;
     std::vector<uint32_t> matter_transverseP_vector;
     std::vector<uint32_t> antimatter_pseudo_rapidity_vector;
@@ -112,7 +131,7 @@ class Analysed_Data{
     template<class Archive>
     void serialize(Archive & ar, const unsigned int version)
     {
-      //uses BOOST_SERIALIZATION_NVP for xml conversion
+      //uses BOOST_SERIALIZskewnesATION_NVP for xml conversion
         ar & BOOST_SERIALIZATION_NVP(Omegaminus_count);
         ar & BOOST_SERIALIZATION_NVP(Omegaplus_count);
         ar & BOOST_SERIALIZATION_NVP(Omega_event_equal_amount_count);

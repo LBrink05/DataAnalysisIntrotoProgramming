@@ -87,6 +87,7 @@ class Sample{
       ar & BOOST_SERIALIZATION_NVP(Omega_plus_mean_uncertainty);
       ar & BOOST_SERIALIZATION_NVP(Omega_mean_difference);
       ar & BOOST_SERIALIZATION_NVP(Omega_mean_combined_uncertainty);
+      ar & BOOST_SERIALIZATION_NVP(Omega_mean_sigma);
       ar & BOOST_SERIALIZATION_NVP(Omega_minus_skewness);
       ar & BOOST_SERIALIZATION_NVP(Omega_minus_skewness_uncertainty);
       ar & BOOST_SERIALIZATION_NVP(Omega_plus_skewness);

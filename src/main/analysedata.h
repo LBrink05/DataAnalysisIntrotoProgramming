@@ -210,8 +210,11 @@ Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
   }
   Analysed_Data.Results.Omega_plus_mean_uncertainty = sqrt(Analysed_Data.Results.Omega_plus_mean_uncertainty);
 
-  //wrong do subsampling for difference
-  Analysed_Data.Results.Omega_mean_difference = Analysed_Data.Results.Omega_minus_mean - Analysed_Data.Results.Omega_plus_mean;
+  //subsampling for difference
+  for (int sample = 0; sample < Sample_Omega_minus_mean_vector.size(); sample++){
+    Analysed_Data.Results.Omega_mean_difference += Sample_Omega_minus_mean_vector[sample] - Sample_Omega_plus_mean_vector[sample];
+  }
+  Analysed_Data.Results.Omega_mean_difference = Analysed_Data.Results.Omega_mean_difference / Sample_Omega_minus_mean_vector.size();
   //wrong mean difference
   Analysed_Data.Results.Omega_mean_combined_uncertainty = sqrt((pow(Analysed_Data.Results.Omega_minus_mean_uncertainty,2) + pow(Analysed_Data.Results.Omega_plus_mean_uncertainty,2)) / 2);
   Analysed_Data.Results.Omega_mean_sigma = Analysed_Data.Results.Omega_mean_difference / Analysed_Data.Results.Omega_mean_combined_uncertainty;

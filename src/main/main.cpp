@@ -102,7 +102,7 @@ int main(){
     //Displaying results
     std::cout << "Beginning to display data." << "\n";
     Display_Data(Analysed_Data, raw_Data);
-    std::cout << "Finished displaying data." << "\n";
+    std::cout << "== Finished displaying data. ==" << "\n";
 
     //serializing results for python to read
     serialization_results(Analysed_Data);

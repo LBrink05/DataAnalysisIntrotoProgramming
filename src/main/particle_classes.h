@@ -133,6 +133,7 @@ class Analysed_Data{
     void serialize(Archive & ar, const unsigned int version)
     {
       //uses BOOST_SERIALIZskewnesATION_NVP for xml conversion
+        ar & BOOST_SERIALIZATION_NVP(event_num);
         ar & BOOST_SERIALIZATION_NVP(Omegaminus_count);
         ar & BOOST_SERIALIZATION_NVP(Omegaplus_count);
         ar & BOOST_SERIALIZATION_NVP(Omega_event_equal_amount_count);
@@ -142,6 +143,7 @@ class Analysed_Data{
     }
   
   public:
+  uint32_t event_num;
   uint32_t Omegaminus_count;
   uint32_t Omegaplus_count;
   uint32_t Omega_event_equal_amount_count;

@@ -30,6 +30,8 @@
 //Function to calculate certain averages etc from particle events
 Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
 
+  //getting count of all events
+  Analysed_Data.event_num = raw_Data.Particle_event_vector.size();
   //Gathering overall count of Omega particles in 5 million collisions
   Analysed_Data.Omegaminus_count = 0;
   Analysed_Data.Omegaplus_count = 0;
@@ -215,7 +217,7 @@ Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
     Analysed_Data.Results.Omega_mean_difference += Sample_Omega_minus_mean_vector[sample] - Sample_Omega_plus_mean_vector[sample];
   }
   Analysed_Data.Results.Omega_mean_difference = Analysed_Data.Results.Omega_mean_difference / Sample_Omega_minus_mean_vector.size();
-  //wrong mean difference
+
   Analysed_Data.Results.Omega_mean_combined_uncertainty = sqrt((pow(Analysed_Data.Results.Omega_minus_mean_uncertainty,2) + pow(Analysed_Data.Results.Omega_plus_mean_uncertainty,2)) / 2);
   Analysed_Data.Results.Omega_mean_sigma = Analysed_Data.Results.Omega_mean_difference / Analysed_Data.Results.Omega_mean_combined_uncertainty;
   

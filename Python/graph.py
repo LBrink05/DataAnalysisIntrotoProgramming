@@ -3,6 +3,10 @@ import xml.etree.ElementTree as ET
 import numpy
 import math
 import string
+import matplotlib
+import pandas
+
+#importing all the data from main.cpp
 
 result_path = "Vectorset/results.xml"
 tree = ET.parse(result_path)
@@ -76,6 +80,5 @@ for element in (antimatter_transverseP_vector):
 #print(vec + "\n")
 
 
-
-
+#using matplotlib 
 

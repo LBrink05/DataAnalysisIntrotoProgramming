@@ -11,8 +11,8 @@
 		<Omega_plus_mean>1.06360000000000005e-03</Omega_plus_mean>
 		<Omega_plus_mean_uncertainty>4.44504218202707190e-05</Omega_plus_mean_uncertainty>
 		<Omega_mean_difference>3.27999999999999977e-05</Omega_mean_difference>
-		<Omega_mean_combined_uncertainty>4.06428345468177278e-05</Omega_mean_combined_uncertainty>
-		<Omega_mean_sigma>8.07030325658429915e-01</Omega_mean_sigma>
+		<Omega_mean_combined_uncertainty>5.74776478293953990e-05</Omega_mean_combined_uncertainty>
+		<Omega_mean_sigma>5.70656615896263597e-01</Omega_mean_sigma>
 		<Omega_minus_skewness>1.10340000000000026e-03</Omega_minus_skewness>
 		<Omega_minus_skewness_uncertainty>3.77046416240759492e-05</Omega_minus_skewness_uncertainty>
 		<Omega_plus_skewness>1.06720000000000014e-03</Omega_plus_skewness>
@@ -34,23 +34,41 @@
 			<item>691</item>
 		</matter_pseudo_rapidity_vector>
 		<matter_transverseP_vector>
-			<count>18</count>
+			<count>36</count>
 			<item_version>0</item_version>
-			<item>2403</item>
-			<item>1689</item>
-			<item>886</item>
-			<item>321</item>
-			<item>104</item>
-			<item>35</item>
+			<item>941</item>
+			<item>1462</item>
+			<item>965</item>
+			<item>724</item>
+			<item>507</item>
+			<item>379</item>
+			<item>210</item>
+			<item>111</item>
+			<item>66</item>
+			<item>38</item>
 			<item>25</item>
-			<item>5</item>
-			<item>5</item>
+			<item>10</item>
+			<item>13</item>
+			<item>12</item>
 			<item>3</item>
-			<item>0</item>
 			<item>2</item>
+			<item>3</item>
+			<item>2</item>
+			<item>2</item>
+			<item>1</item>
+			<item>0</item>
+			<item>0</item>
 			<item>2</item>
 			<item>0</item>
 			<item>1</item>
+			<item>1</item>
+			<item>0</item>
+			<item>0</item>
+			<item>0</item>
+			<item>1</item>
+			<item>0</item>
+			<item>0</item>
+			<item>0</item>
 			<item>0</item>
 			<item>0</item>
 			<item>1</item>
@@ -68,18 +86,29 @@
 			<item>697</item>
 		</antimatter_pseudo_rapidity_vector>
 		<antimatter_transverseP_vector>
-			<count>11</count>
+			<count>22</count>
 			<item_version>0</item_version>
-			<item>2358</item>
-			<item>1659</item>
-			<item>817</item>
-			<item>316</item>
-			<item>101</item>
-			<item>28</item>
-			<item>23</item>
+			<item>937</item>
+			<item>1421</item>
+			<item>955</item>
+			<item>704</item>
+			<item>439</item>
+			<item>378</item>
+			<item>213</item>
+			<item>103</item>
+			<item>70</item>
+			<item>31</item>
+			<item>16</item>
+			<item>12</item>
+			<item>10</item>
+			<item>13</item>
 			<item>4</item>
-			<item>8</item>
+			<item>0</item>
+			<item>5</item>
 			<item>3</item>
+			<item>2</item>
+			<item>1</item>
+			<item>0</item>
 			<item>1</item>
 		</antimatter_transverseP_vector>
 	</Results>

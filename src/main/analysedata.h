@@ -81,7 +81,7 @@ Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
     for (int particle = 0; particle < raw_Data.Particle_event_vector[event0].Particles.size(); particle++){
       if (abs(raw_Data.Particle_event_vector[event0].Particles[particle].PGC) == 3334){
         //formula is floor((value + offset) / step)
-        transversePposition = floor(raw_Data.Particle_event_vector[event0].Particles[particle].transverseP + offset_transverseP / step_transverseP);
+        transversePposition = floor((raw_Data.Particle_event_vector[event0].Particles[particle].transverseP + offset_transverseP) / step_transverseP);
         pseudorapidityposition  = floor((raw_Data.Particle_event_vector[event0].Particles[particle].pseudorapidity + offset_pseudorapidity) / step_pseudorapidity);
         //MATTER OMEGA MINUS
         if (raw_Data.Particle_event_vector[event0].Particles[particle].PGC == 3334){
@@ -218,7 +218,7 @@ Analysed_Data Analyse_Data(raw_Data raw_Data, Analysed_Data Analysed_Data){
   }
   Analysed_Data.Results.Omega_mean_difference = Analysed_Data.Results.Omega_mean_difference / Sample_Omega_minus_mean_vector.size();
 
-  Analysed_Data.Results.Omega_mean_combined_uncertainty = sqrt((pow(Analysed_Data.Results.Omega_minus_mean_uncertainty,2) + pow(Analysed_Data.Results.Omega_plus_mean_uncertainty,2)) / 2);
+  Analysed_Data.Results.Omega_mean_combined_uncertainty = sqrt((pow(Analysed_Data.Results.Omega_minus_mean_uncertainty,2) + pow(Analysed_Data.Results.Omega_plus_mean_uncertainty,2)));
   Analysed_Data.Results.Omega_mean_sigma = Analysed_Data.Results.Omega_mean_difference / Analysed_Data.Results.Omega_mean_combined_uncertainty;
   
    //Total count of all Omega particles
